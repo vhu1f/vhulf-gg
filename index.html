@@ -1,7 +1,7 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
     <head>
-        <title>Socket.IO chat</title>
+        <title>chatterino</title>
         <style>
             * { margin: 0; padding: 0; box-sizing: border-box; }
             body { font: 13px Helvetica, Arial; }
@@ -12,11 +12,11 @@
             #messages li { padding: 5px 10px; }
             #messages li:nth-child(odd) { background: #eee; }
         </style>
-        <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+        <script src="jquery-3.5.1.min.js"></script>
         <script src="/socket.io/socket.io.js"></script>
         <script>
             $(function () {
-                var socket = io();
+                let socket = io();
                 $('form').submit(function(e) {
                     e.preventDefault(); // prevents page reloading
                     socket.emit('chat', $('#m').val());

@@ -1,6 +1,158 @@
+<!-- Foundations of bubble mechanics was taken from https://www.youtube.com/watch?v=noC22oMVb44 -->
+
 <!DOCTYPE html>
 <html>
     <head><meta charset="UTF-8"></head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title></title>
+    <title>bub</title>
+    <link type='text/css' href='jquery-ui-1.12.1.custom/jquery-ui.css'>
+    <script type='text/javascript' src="jquery-3.5.1.min.js"></script>
+    <script type='text/javascript' src="jquery-ui-1.12.1.custom/jquery-ui.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <style>
+        section {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            background: #0F0;
+            background: #0F0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        section span:before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            transform: scale(0.3) translate(-70%, -70%);
+            --webkit-transform: scale(0.3) translate(-70%, -70%);
+            background: rgb(255,255,255);
+            background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, rgba(255, 255, 255, 0.1) 85%, rgba(255,255,255,0.0) 100%);
+            border-radius: 50%;
+        }
+
+        section span {
+            position: absolute;
+            bottom: -65px;
+            background: transparent;
+            border-radius: 50%;
+            border: rgba(150, 150, 150, 0.5);
+
+            pointer-events: none;
+            box-shadow: inset 0 0 25px rgba(0, 0, 0, 1);
+            animation: animate 4s linear infinite;
+        }
+
+        section span img {
+            position: relative;
+            background: transparent;
+            border-radius: 50%;
+            z-index: -1;
+
+            pointer-events: none;
+            box-shadow: inset 0 0 10px rgba(150, 150, 150, 0.5);
+        }
+
+        @keyframes animate {
+            0% {
+                transform: translateY(0%);
+                opacity: 1;
+            }
+            95% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(calc(-75vh - 250%));
+                opacity: 0;
+            }
+        }
+    </style>
+    <body>
+        <section></section>
+
+        <script type="text/javascript">
+            let socket=io();
+
+            function infiniteSway(bubb, rounds) {
+                if (rounds > 10) return false;
+                let plusOrMinus = Math.random() < 0.5 ? -1 : 1;
+                let transformation = 40 + Math.round(Math.random() * 20 * plusOrMinus);
+                let bubbLeft = bubb.style.left.replace("px", "");
+                $(bubb).animate({ "left": transformation + parseInt(bubbLeft) + 'px'}, { duration: 800 + Math.round(Math.random() * 500), easing: "swing",
+                    complete:function() {
+                        bubb.style.left = transformation + parseInt(bubbLeft) + 'px';
+                        infiniteSway(bubb, rounds+1);
+                    }
+                });
+            }
+
+            function spawnBubble(image) {
+                if(image == null) {
+                    switch (Math.round(1 + (Math.random() * 5))) {
+                        case 1:
+                            image = 'images/nosecrets.jpg';
+                            break;
+                        case 2:
+                            image = 'images/astro.jpg';
+                            break;
+                        case 3:
+                            image = 'images/webex-lolxd.gif';
+                            break;
+                        case 4:
+                            image = 'images/webex-wow.gif';
+                            break;
+                        case 5:
+                            image = 'images/webex-thumbup.gif';
+                            break;
+                        case 6:
+                            image = 'images/webex-confetti.gif';
+                            break;
+                        default:
+                            image = 'images/webex-smile.gif';
+                            break;
+                    }
+                }
+
+                regex = /([\s\S]*([\.]+\/)+)|([\s\S]*\:+\/+)+/;
+                if (regex.test(image)) return false;
+
+                const section = document.querySelector('section');
+                const createElement = document.createElement('span');
+                const bubbImage = document.createElement('img');
+                let size = 50 + Math.random() * 100;
+                let left= 150 + Math.random() * (innerWidth - 300) + 'px';
+               
+                
+
+                createElement.style.width = size +'px';
+                createElement.style.height = size + 'px';
+                createElement.style.left = left;
+
+                bubbImage.style.width = size +'px';
+                bubbImage.style.height = size + 'px';
+                bubbImage.style.left = parent.left;
+                bubbImage.src = image;
+
+                createElement.appendChild(bubbImage);
+                section.appendChild(createElement);
+
+                infiniteSway(createElement, 0);
+
+                setTimeout(() => {
+                    createElement.remove();
+                }, 4000);
+            }
+
+            socket.on('bubble', function(msg){
+                spawnBubble(msg);
+            });
+
+            //setInterval(spawnBubble, 800);
+        </script>
+    </body>
 </html>

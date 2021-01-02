@@ -4,7 +4,7 @@
   "description": "vhulf-gg main site for memedry and such",
   "main": "index.js",
   "scripts": {
-    "test": "index.js"
+    "start": "node index.js"
   },
   "keywords": [
     "bubble"
@@ -12,6 +12,7 @@
   "author": "vhulf",
   "license": "ISC",
   "dependencies": {
+    "ejs": "^3.1.5",
     "express": "^4.17.1",
     "socket.io": "^3.0.4"
   }
