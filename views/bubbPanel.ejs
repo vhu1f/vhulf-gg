@@ -25,7 +25,7 @@
     </head>
     <body>
         <section>
-            <% images.forEach(function(image){ 
+            <% images.forEach(function(image){
                 if (image != '.DS_Store') {%>
                     <img src='images/<%= image %>' width="100px" onclick="sendBub('images/<%= image %>')"/>
             <% }}) %>
@@ -34,8 +34,10 @@
         <script>
             let socket=io();
             function sendBub(path) {
-                socket.emit('bubbPlz', path);
+                socket.emit('bubbPlz', path + "#" + new Date().getTime());
             }
+
+            $('img').on('dragstart', function(event) { event.preventDefault(); });
         </script>
     </body>
 </html>
