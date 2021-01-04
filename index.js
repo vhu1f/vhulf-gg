@@ -10,7 +10,15 @@ const util = require('util');
 const readDir = util.promisify(fs.readdir);
 
 app.set("view engine", "ejs");
-app.use(express.static('public'));
+app.use('/', express.static(path.join(__dirname, 'public'), {
+  setHeaders: function(res, path) {
+    res.set("Pragma-directive: no-cache");
+    res.set("Cache-directive: no-cache");
+    res.set("Cache-control: no-cache");
+    res.set("Pragma: no-cache");
+    res.set("Expires: 0");
+  }
+}))
 
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/index.html');

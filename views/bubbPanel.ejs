@@ -34,7 +34,9 @@
         <script>
             let socket=io();
             function sendBub(path) {
-                socket.emit('bubbPlz', path + "#" + new Date().getTime());
+                let nocachePath = path + "?stamp=" + new Date().getTime();
+                console.log(nocachePath);
+                socket.emit('bubbPlz', nocachePath);
             }
 
             $('img').on('dragstart', function(event) { event.preventDefault(); });
